@@ -135,7 +135,15 @@ public class EntityNukeExplosionMK5 extends EntityExplosionChunkloading implemen
             if (GeneralConfig.enableExtendedLogging) {
                 MainRegistry.logger.info("[NUKE] Explosion complete. Time elapsed: {}ms", System.currentTimeMillis() - explosionStart);
             }
-            spawnFallout();
+            // Keep the fallout spawn call inside onUpdate for addons (e.g. Leafia)
+            // that redirect World.spawnEntity here to customize the fallout.
+            if (fallout) {
+                int scale = Math.max(1, (int) (radius * 2.5D + falloutAdd) * BombConfig.falloutRange / 100);
+                EntityFalloutRain rain = new EntityFalloutRain(world);
+                rain.setPosition(posX, posY, posZ);
+                rain.setScale(scale);
+                if (world.spawnEntity(rain) && !rain.isDead) rain.holdGenerationTracking();
+            }
             setDead();
         }
     }
@@ -159,15 +167,6 @@ public class EntityNukeExplosionMK5 extends EntityExplosionChunkloading implemen
             if (resistance < 1D) resistance = 1D;
             ContaminationUtil.contaminate(entity, HazardType.RADIATION, ContaminationType.RAD_BYPASS, radiation / resistance / (length * length));
         }
-    }
-
-    private void spawnFallout() {
-        if (!fallout) return;
-        int scale = Math.max(1, (int) (radius * 2.5D + falloutAdd) * BombConfig.falloutRange / 100);
-        EntityFalloutRain rain = new EntityFalloutRain(world);
-        rain.setPosition(posX, posY, posZ);
-        rain.setScale(scale);
-        if (world.spawnEntity(rain) && !rain.isDead) rain.holdGenerationTracking();
     }
 
     private void releaseRuntime() {
