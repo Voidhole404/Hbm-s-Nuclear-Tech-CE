@@ -13,7 +13,7 @@ public abstract class MixinBlockStateContainer {
     @Unique
     public volatile SectionPalette.Data hbm$paletteData;
 
-    @Inject(method = "setBits(IZ)V", at = @At("RETURN"), remap = false, require = 1)
+    @Inject(method = "setBits(IZ)V", at = @At("RETURN"), require = 1)
     private void hbm$publishPaletteGeneration(CallbackInfo ci) {
         SectionPalette.resized((BlockStateContainer) (Object) this);
     }
