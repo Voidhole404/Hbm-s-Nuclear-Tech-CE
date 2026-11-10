@@ -29,6 +29,12 @@ public class BombConfig {
 	public static int fChunkSpeed = 5;
 	public static int falloutDelay = 4;
 	public static int limitExplosionLifespan = 0;
+	/**
+	 * Binary compatibility with Leafia's Cursed Addon, which writes this field
+	 * during GeneralConfig loading. The current CE explosion system does not
+	 * consult this legacy flag.
+	 */
+	public static boolean safeCommit = true;
 	public static boolean disableNuclear = false;
 	public static boolean enableNukeClouds = true;
 	public static boolean chunkloading = true;
